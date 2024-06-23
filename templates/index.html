@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Academia de Trading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+    <style>
+        .calendly-link {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            font-weight: 600;
+        }
+        .calendly-link:hover {
+            background-color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo de la empresa" id="company-logo">
+            </div>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Buscar cursos, temas...">
+                <button id="search-button">Buscar</button>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Dashboard</a>
+                <a href="{{ url_for('clases_en_vivo') }}">Clases en VIVO</a>
+                <a href="{{ url_for('mi_curso') }}">Mi Curso</a>
+                <a href="{{ url_for('herramientas') }}" class="active">Herramientas</a>
+                <a href="{{ url_for('profile') }}" class="profile-link">
+                    {% if session.profile_image %}
+                        <img src="{{ url_for('static', filename='images/profiles/' ~ session.profile_image) }}" alt="Foto de perfil" class="profile-img">
+                    {% else %}
+                        Perfil
+                    {% endif %}
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>¡Bienvenido de vuelta, {{ user.nombre }}!</h1>
+        
+        <div class="main-content">
+            <div class="left-column">
+                <div class="featured-course">
+                    <h2>Impulsa tu carrera en trading hoy</h2>
+                    <h3>Curso Avanzado de Trading</h3>
+                    <p>Descubre estrategias de élite y domina el mercado financiero</p>
+                    <button class="btn">COMENZAR AHORA</button>
+                </div>
+
+                <div class="card">
+                    <h2>Tus Cursos en Progreso</h2>
+                    <div class="scroll-container">
+                        <div class="course-grid">
+                            <div class="course-item">Análisis Técnico</div>
+                            <div class="course-item">Gestión de Riesgos</div>
+                            <div class="course-item">Psicología del Trading</div>
+                            <div class="course-item">Estrategias Avanzadas</div>
+                            <div class="course-item">Forex Masterclass</div>
+                            <div class="course-item">Criptomonedas 101</div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Botón de Calendly -->
+                <div class="card">
+                    <h2>Agende una Reunión</h2>
+                    <a href="#" onclick="Calendly.initPopupWidget({url: 'https://calendly.com/trustrading/reunion-con-asesor'});return false;" class="calendly-link">Programe una cita con nosotros</a>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="card">
+                    <h2>Cursos Recomendados</h2>
+                    <ul>
+                        <li>Day Trading Profesional</li>
+                        <li>Análisis Fundamental Avanzado</li>
+                        <li>Algorithmic Trading</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h2>Próximos Webinars</h2>
+                    <div class="scroll-container">
+                        <div class="live-classes-grid">
+                            <div class="live-class-item">Análisis de Mercado Semanal</div>
+                            <div class="live-class-item">Q&A con Traders Pro</div>
+                            <div class="live-class-item">Estrategias de Swing Trading</div>
+                            <div class="live-class-item">Webinar: Tendencias 2024</div>
+                            <div class="live-class-item">Trading en Vivo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Intercom Chatbot Script -->
+    <script>
+        window.intercomSettings = {
+            api_base: "https://api-iam.intercom.io",
+            app_id: "tmhpsw6z",
+        };
+    </script>
+    <script>
+        // Completamos previamente el ID de tu aplicación en la URL del widget: 'https://widget.intercom.io/widget/tmhpsw6z'
+        (function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/tmhpsw6z';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(document.readyState==='complete'){l();}else if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();
+    </script>
+    <script>
+        const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+        const currentTheme = localStorage.getItem('theme');
+    
+        if (currentTheme) {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+    
+            if (currentTheme === 'dark') {
+                toggleSwitch.checked = true;
+            }
+        }
+    
+        function switchTheme(e) {
+            if (e.target.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }    
+        }
+    
+        toggleSwitch.addEventListener('change', switchTheme, false);
+    </script>
+    
+    <!-- Script de Calendly -->
+    <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+    
+</body>
+</html>

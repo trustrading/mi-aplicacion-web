@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Academia de Trading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-header h1 {
+            font-size: 2em;
+            color: var(--primary-color);
+        }
+        .profile-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .form-group input,
+        .form-group select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .form-group input[type="file"] {
+            padding: 3px;
+        }
+        .form-group button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .form-group button:hover {
+            background-color: var(--primary-color);
+        }
+        .profile-picture {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .profile-picture img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border: 2px solid var(--secondary-color);
+            margin-bottom: 10px;
+        }
+        .phone-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .phone-group select {
+            max-width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo de la empresa" id="company-logo">
+            </div>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Buscar cursos, temas...">
+                <button id="search-button">Buscar</button>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Dashboard</a>
+                <a href="{{ url_for('clases_en_vivo') }}">Clases en VIVO</a>
+                <a href="{{ url_for('mi_curso') }}">Mi Curso</a>
+                <a href="{{ url_for('herramientas') }}">Herramientas</a>
+                <a href="{{ url_for('profile') }}" class="profile-link">
+                    {% if session.profile_image %}
+                        <img src="{{ url_for('static', filename='images/profiles/' ~ session.profile_image) }}" alt="Foto de perfil" class="profile-img">
+                    {% else %}
+                        Perfil
+                    {% endif %}
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="profile-container">
+            <div class="profile-header">
+                <h1>Mi Perfil</h1>
+            </div>
+            <form class="profile-form" action="{{ url_for('profile') }}" method="POST" enctype="multipart/form-data">
+                <div class="profile-picture">
+                    <img src="{{ url_for('static', filename='images/profiles/' ~ user.profile_image) }}" alt="Foto de perfil" id="profile-pic">
+                    <label for="profile-pic-upload" class="form-group button">Cambiar Foto</label>
+                    <input type="file" id="profile-pic-upload" name="profile_pic" style="display:none;" accept="image/*">
+                    <a href="{{ url_for('logout') }}" id="logout-link">Cerrar</a>
+                </div>
+                <div class="form-group">
+                    <label for="name">Nombre:</label>
+                    <input type="text" id="name" name="name" value="{{ user.nombre }}" placeholder="Ingresa tu nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="dob">Fecha de Nacimiento:</label>
+                    <input type="date" id="dob" name="dob" value="{{ user.dob }}">
+                </div>
+                <div class="form-group">
+                    <label for="email">Correo Electrónico:</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}" placeholder="Ingresa tu correo electrónico" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Número de Teléfono:</label>
+                    <div class="phone-group">
+                        <select id="phone-prefix" name="phone_prefix">
+                            <option value="+54" {% if user.phone_prefix == '+54' %}selected{% endif %}>Argentina (+54)</option>
+                            <!-- Añade más países aquí -->
+                        </select>
+                        <input type="tel" id="phone" name="phone" placeholder="Ingresa tu número de teléfono" value="{{ user.phone }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Actualizar Perfil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('profile-pic-upload').addEventListener('change', function(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const img = document.getElementById('profile-pic');
+                img.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        });
+    </script>
+</body>
+</html>
+
+           

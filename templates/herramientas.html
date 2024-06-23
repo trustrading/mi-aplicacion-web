@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Academia de Trading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .tools-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .tools-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .tools-header h1 {
+            font-size: 2em;
+            color: var(--primary-color);
+        }
+        .tab {
+            overflow: hidden;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+        .tab button {
+            background-color: inherit;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+            color: var(--primary-color);
+        }
+        .tab button:hover {
+            background-color: #ddd;
+        }
+        .tab button.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        .tabcontent {
+            display: none;
+            padding: 20px;
+            border-top: none;
+        }
+        .poweredBy {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            color: #333333;
+            text-decoration: none;
+        }
+        .poweredBy a {
+            font-size: 11px;
+            color: #06529D;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        .centered {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo de la empresa" id="company-logo">
+            </div>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Buscar cursos, temas...">
+                <button id="search-button">Buscar</button>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Dashboard</a>
+                <a href="{{ url_for('clases_en_vivo') }}">Clases en VIVO</a>
+                <a href="{{ url_for('mi_curso') }}">Mi Curso</a>
+                <a href="{{ url_for('herramientas') }}" class="active">Herramientas</a>
+                <a href="{{ url_for('profile') }}" class="profile-link">
+                    {% if session.profile_image %}
+                        <img src="{{ url_for('static', filename='images/profiles/' ~ session.profile_image) }}" alt="Foto de perfil" class="profile-img">
+                    {% else %}
+                        Perfil
+                    {% endif %}
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="tools-container">
+            <div class="tools-header">
+                <h1>Herramientas de Trading</h1>
+            </div>
+            <div class="tab">
+                <button class="tablinks" onclick="openTool(event, 'CalendarioEconomico')">Calendario Económico</button>
+                <button class="tablinks" onclick="openTool(event, 'CalculadoraTamañoPosicion')">Calculadora de Tamaño de Posición</button>
+                <button class="tablinks" onclick="openTool(event, 'GraficoAvanzado')">Gráfico Avanzado</button>
+            </div>
+
+            <div id="CalendarioEconomico" class="tabcontent">
+                <iframe src="https://sslecal2.investing.com?ecoDayBackground=%23ffffff&columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&features=datepicker,timezone&countries=17,29,25,32,6,27,37,122,26,5,72,22,39,14,48,10,35,7,43,38,4,36,110,12&calType=week&timeZone=48&lang=4" width="650" height="467" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0"></iframe>
+                <div class="poweredBy">
+                    <span>Calendario económico en tiempo real proporcionado por <a href="https://es.investing.com/" rel="nofollow" target="_blank">Investing.com España</a>.</span>
+                </div>
+            </div>
+
+            <div id="CalculadoraTamañoPosicion" class="tabcontent centered">
+                <div id="position-size-calculator-578532">
+                    <script type="text/javascript" src="https://www.cashbackforex.com/Content/remote/remote-widgets.js"></script>
+                    <script type="text/javascript">
+                        RemoteCalc({
+                            "Url": "https://www.cashbackforex.com", 
+                            "TopPaneStyle": "YmFja2dyb3VuZDogd2hpdGU7IGNvbG9yOiBibGFjazsgYm9yZGVyOiBzb2xpZCAxcHggYmxhY2s7IGJvcmRlci1ib3R0b206IG5vbmU7IA==",
+                            "BottomPaneStyle": "YmFja2dyb3VuZDogd2hpdGU7IGJvcmRlcjogc29saWQgMXB4IGJsYWNrOyBjb2xvcjogYmxhY2s7",
+                            "ButtonStyle": "YmFja2dyb3VuZDogYmxhY2s7IGNvbG9yOiB3aGl0ZTsgYm9yZGVyLXJhZGl1czogMjBweDs=",
+                            "TitleStyle": "dGV4dC1hbGlnbjogbGVmdDsgZm9udC1zaXplOiA0MHB4OyBmb250LXdlaWdodDogNTAwOw==",
+                            "TextboxStyle": "YmFja2dyb3VuZC1jb2xvcjogd2hpdGU7IGNvbG9yOiBibGFjazsgYm9yZGVyOiBzb2xpZCAxcHggI2FhYWFhYQ==",
+                            "ContainerWidth": "665",
+                            "HighlightColor": "#ffff00",
+                            "IsDisplayTitle": true,
+                            "IsShowChartLinks": false,
+                            "IsShowEmbedButton": false,
+                            "CompactType": "large",
+                            "Calculator": "position-size-calculator",
+                            "ContainerId": "position-size-calculator-578532"
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div id="GraficoAvanzado" class="tabcontent" style="height:600px;">
+                <div class="tradingview-widget-container" style="height:100%;width:100%">
+                    <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
+                    <div class="tradingview-widget-copyright">
+                        <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
+                            <span class="blue-text">Siga los mercados en TradingView</span>
+                        </a>
+                    </div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                    {
+                        "autosize": true,
+                        "symbol": "FX:EURUSD",
+                        "interval": "D",
+                        "timezone": "Etc/UTC",
+                        "theme": "dark",
+                        "style": "1",
+                        "locale": "es",
+                        "withdateranges": true,
+                        "hide_side_toolbar": false,
+                        "allow_symbol_change": true,
+                        "watchlist": [
+                            "OANDA:XAUUSD",
+                            "FX:EURUSD",
+                            "TVC:DXY",
+                            "CAPITALCOM:US100",
+                            "FX:GBPUSD",
+                            "OANDA:AUDCAD"
+                        ],
+                        "calendar": false,
+                        "studies": [
+                            "STD;DEMA"
+                        ],
+                        "support_host": "https://www.tradingview.com"
+                    }
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTool(evt, toolName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(toolName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // Por defecto, abrir la primera herramienta
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelector(".tab button").click();
+        });
+    </script>
+     <script>
+        const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+        const currentTheme = localStorage.getItem('theme');
+    
+        if (currentTheme) {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+    
+            if (currentTheme === 'dark') {
+                toggleSwitch.checked = true;
+            }
+        }
+    
+        function switchTheme(e) {
+            if (e.target.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }    
+        }
+    
+        toggleSwitch.addEventListener('change', switchTheme, false);
+    </script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Academia de Trading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .course-content {
+            display: flex;
+            margin-top: 20px;
+        }
+        .sidebar {
+            width: 300px;
+            background-color: #f0f0f0;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-right: 20px;
+        }
+        .module {
+            margin-bottom: 1rem;
+        }
+        .module-title {
+            font-weight: bold;
+            cursor: pointer;
+            padding: 10px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 5px;
+        }
+        .module-content {
+            margin-left: 1rem;
+            display: none;
+        }
+        .content-item {
+            cursor: pointer;
+            padding: 0.5rem 0;
+        }
+        .content-item.locked {
+            color: gray;
+            cursor: not-allowed;
+        }
+        .progress-bar {
+            height: 10px;
+            background-color: #ddd;
+            margin-top: 0.5rem;
+            border-radius: 5px;
+        }
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 5px;
+            width: 0%;
+        }
+        .main-content {
+            flex-grow: 1;
+        }
+        #content-display {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .notes-section {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+        }
+        #notes-area {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+        }
+        #save-notes {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #save-notes:hover {
+            background-color: var(--primary-color);
+        }
+        .exam {
+            display: none;
+            background-color: #f0f0f0;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .exam input {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo de la empresa" id="company-logo">
+            </div>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Buscar cursos, temas...">
+                <button id="search-button">Buscar</button>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Dashboard</a>
+                <a href="{{ url_for('clases_en_vivo') }}">Clases en VIVO</a>
+                <a href="{{ url_for('mi_curso') }}">Mi Curso</a>
+                <a href="{{ url_for('herramientas') }}" class="active">Herramientas</a>
+                <a href="{{ url_for('profile') }}" class="profile-link">
+                    {% if session.profile_image %}
+                        <img src="{{ url_for('static', filename='images/profiles/' ~ session.profile_image) }}" alt="Foto de perfil" class="profile-img">
+                    {% else %}
+                        Perfil
+                    {% endif %}
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Mi Curso de Trading</h1>
+        
+        <div class="course-content">
+            <div class="sidebar">
+                <div class="module">
+                    <div class="module-title">Módulo 1: Introducción al Trading</div>
+                    <div class="module-content">
+                        <div class="content-item" data-type="video" data-src="https://www.youtube.com/embed/M0rQuPMAV98">1.1 ¿Qué es el trading?</div>
+                        <div class="content-item" data-type="pdf" data-src="path/to/pdf1.pdf">1.2 Historia del trading</div>
+                        <div class="content-item" data-type="exam" data-exam-id="1">Examen Módulo 1</div>
+                    </div>
+                    <div class="progress-bar"><div class="progress" style="width: 50%;"></div></div>
+                </div>
+                <div class="module locked">
+                    <div class="module-title">Módulo 2: Análisis Técnico</div>
+                    <div class="module-content">
+                        <div class="content-item locked" data-type="video" data-src="https://www.youtube.com/embed/another-video-id">2.1 Patrones de velas</div>
+                        <div class="content-item locked" data-type="podcast" data-src="path/to/podcast.mp3">2.2 Indicadores técnicos</div>
+                    </div>
+                    <div class="progress-bar"><div class="progress" style="width: 25%;"></div></div>
+                </div>
+            </div>
+            <div class="main-content">
+                <div id="content-display"></div>
+                <div class="notes-section">
+                    <h3>Mis Anotaciones</h3>
+                    <textarea id="notes-area" placeholder="Escribe tus notas aquí..."></textarea>
+                    <button id="save-notes">Guardar Notas</button>
+                </div>
+                <div class="exam" id="exam-1">
+                    <h3>Examen Módulo 1</h3>
+                    <form>
+                        <label><input type="radio" name="q1" value="correct">Opción Correcta</label><br>
+                        <label><input type="radio" name="q1" value="incorrect">Opción Incorrecta</label><br>
+                        <button type="button" onclick="checkExam(1)">Enviar Examen</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const moduleTitles = document.querySelectorAll('.module-title');
+            const contentItems = document.querySelectorAll('.content-item');
+            const contentDisplay = document.getElementById('content-display');
+            const notesArea = document.getElementById('notes-area');
+            const saveNotesButton = document.getElementById('save-notes');
+
+            moduleTitles.forEach(title => {
+                title.addEventListener('click', function() {
+                    const module = this.parentElement;
+                    if (!module.classList.contains('locked')) {
+                        const content = this.nextElementSibling;
+                        content.style.display = content.style.display === 'none' ? 'block' : 'none';
+                    }
+                });
+            });
+
+            contentItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    if (!this.classList.contains('locked')) {
+                        const type = this.getAttribute('data-type');
+                        const src = this.getAttribute('data-src');
+                        let contentHTML = '';
+
+                        switch(type) {
+                            case 'video':
+                                contentHTML = `<iframe width="100%" height="100%" src="${src}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+                                break;
+                            case 'pdf':
+                                contentHTML = `<embed src="${src}" type="application/pdf" width="100%" height="100%">`;
+                                break;
+                            case 'podcast':
+                                contentHTML = `<audio controls style="width:100%"><source src="${src}" type="audio/mpeg">Your browser does not support the audio element.</audio>`;
+                                break;
+                            case 'exam':
+                                const examId = this.getAttribute('data-exam-id');
+                                document.getElementById(`exam-${examId}`).style.display = 'block';
+                                return;
+                        }
+
+                        contentDisplay.innerHTML = contentHTML;
+
+                        // Cargar notas específicas para este contenido
+                        const contentId = this.textContent;
+                        notesArea.value = localStorage.getItem(`courseNotes_${contentId}`) || '';
+                    }
+                });
+            });
+
+            // Cargar notas guardadas al cargar la página
+            notesArea.value = localStorage.getItem('courseNotes') || '';
+
+            saveNotesButton.addEventListener('click', function() {
+                const activeContent = document.querySelector('.content-item.active');
+                if (activeContent) {
+                    const contentId = activeContent.textContent;
+                    localStorage.setItem(`courseNotes_${contentId}`, notesArea.value);
+                    alert('Notas guardadas para ' + contentId);
+                } else {
+                    localStorage.setItem('courseNotes', notesArea.value);
+                    alert('Notas generales guardadas correctamente');
+                }
+            });
+        });
+
+        function checkExam(moduleNumber) {
+            const exam = document.getElementById(`exam-${moduleNumber}`);
+            const answers = exam.querySelectorAll('input[type="radio"]');
+            let passed = false;
+
+            answers.forEach(answer => {
+                if (answer.checked && answer.value === 'correct') {
+                    passed = true;
+                }
+            });
+
+            if (passed) {
+                alert('Has pasado el examen!');
+                unlockModule(moduleNumber + 1);
+                exam.style.display = 'none';
+            } else {
+                alert('Respuestas incorrectas. Inténtalo de nuevo.');
+            }
+        }
+
+        function unlockModule(moduleNumber) {
+            const module = document.querySelector(`.module:nth-child(${moduleNumber})`);
+            module.classList.remove('locked');
+            const contentItems = module.querySelectorAll('.content-item');
+            contentItems.forEach(item => item.classList.remove('locked'));
+        }
+    </script>
+    <script>
+        const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+        const currentTheme = localStorage.getItem('theme');
+
+        if (currentTheme) {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+
+            if (currentTheme === 'dark') {
+                toggleSwitch.checked = true;
+            }
+        }
+
+        function switchTheme(e) {
+            if (e.target.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }    
+        }
+
+        toggleSwitch.addEventListener('change', switchTheme, false);
+    </script>
+</body>
+</html>
